@@ -1,0 +1,1 @@
+# spring-batch-json-reader
