@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  batch_database:
+    container_name: ${DATABASE_CONTAINER_NAME}
+    image: postgres:15
+    environment:
+      - "POSTGRES_DB=${DB_METADATA_DATABASE}"
+      - "POSTGRES_USER=${DB_METADATA_USERNAME}"
+      - "POSTGRES_PASSWORD=${DB_METADATA_PASSWORD}"
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: psql --echo-all --username ${DB_METADATA_USERNAME} --dbname ${DB_METADATA_DATABASE} --command="SELECT VERSION();"
+      interval: 10s
+      retries: 15
+      start_period: 5s
+      timeout: 20s
+  batch_application:
+    container_name: ${APPLICATION_CONTAINER_NAME}
+    image: ${APPLICATION_IMAGE_NAME}
+    depends_on:
+      batch_database:
+        condition: service_healthy
+    environment:
+      - "PROFILE=${CURRENT_PROFILE}"
+      - "DATA_SOURCE_FILE=${DATA_SOURCE_FILE}"
+      - "BATCH_META_DB_HOST=${DB_METADATA_HOST}"
+      - "BATCH_META_DB_PORT=${DB_METADATA_PORT}"
+      - "BATCH_META_DB_NAME=${DB_METADATA_DATABASE}"
+      - "BATCH_META_DB_USER=${DB_METADATA_USERNAME}"
+      - "BATCH_META_DB_PASS=${DB_METADATA_PASSWORD}"
+    volumes:
+      - ${DATA_SOURCE_VOLUME}:/opt/app/files
