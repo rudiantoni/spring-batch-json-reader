@@ -45,4 +45,4 @@
 
 Log image with working example:
 - **Linux**: [spring-batch-json-reader](https://i.imgur.com/zwPwh9r.png)
-- **Windows**: [spring-batch-json-reader]()
+- **Windows**: [spring-batch-json-reader](https://i.imgur.com/LBlC8kn.png)
